@@ -34,6 +34,16 @@ top_bottom_culture <-  culture_score[(culture_score$rank <= 5) | (culture_score$
 barplot(rank ~ company, top_bottom_vision[order(top_bottom_vision$rank, decreasing = TRUE),], horiz = TRUE, 
           ylab = )
 
+### Assign grades
+reputation$grade = "Excellent"
+reputation$grade <- case_when(
+                              reputation$score < 50 ~ "Critical",
+                              reputation$score < 55 ~ "Very Poor",
+                              reputation$score < 65 ~ "Poor",
+                              reputation$score < 70 ~ "Fair",
+                              reputation$score < 75 ~ "Good",
+                              reputation$score < 80 ~ "Very Good",
+                              TRUE ~ "Excellent")
 
 library(ggplot2)
 
@@ -43,7 +53,7 @@ ggplot(data = top_bottom_trust, aes(fct_reorder(company, score, .desc = TRUE), s
        caption = 'Data from Axios-Harris poll regarding top 100 "Most Visible companies"') +
   xlab("Company") +
   ylab("Trust Score") +
-  
+# add grade labels 
   geom_rect(aes(xmin = 5, ymin = 81, xmax = 6, ymax = 84), fill = "white", color = "black") +
   annotate("text", x =5.5, y = 82.5, size = 4, label = "Excellent") +
   geom_rect(aes(xmin = 5, ymin = 76, xmax = 6, ymax = 79), fill = "white", color = "black") +
@@ -60,9 +70,10 @@ ggplot(data = top_bottom_trust, aes(fct_reorder(company, score, .desc = TRUE), s
   annotate("text", x = 5.5, y = 47.5, size = 4, label = "Critical") +
   
   geom_rect(aes(xmin = 1, ymin = 15, xmax = 5, ymax = 25), fill = "white") +
-  annotate("text", x = 3, y = 20, size = 6, label = "Five least-trusted companies") +
+  annotate("text", x = 3, y = 20, size = 6, label = "Five most-trusted companies") +
   geom_rect(aes(xmin = 6, ymin = 15, xmax = 10, ymax = 25), fill = "white") +
   annotate("text", x = 8, y = 20, size = 6, label = "Five least-trusted companies") +
+#add grade dividers
   geom_hline(aes(yintercept = 50)) +
   geom_hline(aes(yintercept = 55)) +
   geom_hline(aes(yintercept = 65)) +
